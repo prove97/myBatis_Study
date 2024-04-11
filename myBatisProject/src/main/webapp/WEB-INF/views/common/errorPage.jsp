@@ -7,8 +7,10 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<jsp:include page="/WEB-INF/views/common/menubar.jsp" />
+	<jsp:include page="menubar.jsp" />
+	<br><br>
+	<h1 align="center" style="color: red">${errorMsg}</h1>
+	
+	
 </body>
 </html>
-
-<!-- WEB-INF폴더는 WAS에서 관리해서 직접 접근할수 없음 -->
