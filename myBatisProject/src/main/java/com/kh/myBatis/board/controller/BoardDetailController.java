@@ -10,21 +10,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.kh.myBatis.board.model.vo.Board;
+import com.kh.myBatis.board.model.vo.Reply;
+import com.kh.myBatis.board.service.BoardService;
 import com.kh.myBatis.board.service.BoardServiceImpl;
-import com.kh.myBatis.common.template.Pagination;
-import com.kh.myBatis.common.vo.PageInfo;
 
 /**
- * Servlet implementation class BoardListController
+ * Servlet implementation class BoardDetailController
  */
-@WebServlet("/list.bo")
-public class BoardListController extends HttpServlet {
+@WebServlet("/detail.bo")
+public class BoardDetailController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public BoardListController() {
+    public BoardDetailController() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -33,17 +33,26 @@ public class BoardListController extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//---------------페이징처리---------------------
-		int listCount = new BoardServiceImpl().selectListCount(); //현재 총 게시글 수\
-		int currentPage = Integer.parseInt(request.getParameter("cpage"));
+		int boardNo = Integer.parseInt(request.getParameter("bno"));
 		
-		PageInfo pi = Pagination.getPageInfo(listCount, currentPage, 10, 5);
-		ArrayList<Board> list = new BoardServiceImpl().selectList(pi);
+		BoardService bService = new BoardServiceImpl();
+		//조회수 증가 + 상세조회
+		Board b = bService.increaseCount(boardNo);
 		
-		request.setAttribute("list", list);
-		request.setAttribute("pi", pi);
-		
-		request.getRequestDispatcher("WEB-INF/views/board/boardListView.jsp").forward(request, response);
+		if(b != null) {
+			ArrayList<Reply> list = bService.selectReplyList(boardNo);
+			
+			
+			request.setAttribute("b", b); //게시글
+			request.setAttribute("list", list); //댓글리스트
+			
+			request.getRequestDispatcher("WEB-INF/views/board/boardDetailView.jsp").forward(request, response);
+			
+			
+		} else {
+			request.setAttribute("errorMsg", "상세조회실패");
+			request.getRequestDispatcher("WEB-INF/views/common/errorPage.jsp").forward(request, response);
+		}
 		
 	}
 

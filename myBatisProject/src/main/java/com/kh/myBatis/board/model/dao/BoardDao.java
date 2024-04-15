@@ -1,19 +1,19 @@
 package com.kh.myBatis.board.model.dao;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 
 import com.kh.myBatis.board.model.vo.Board;
+import com.kh.myBatis.board.model.vo.Reply;
 import com.kh.myBatis.common.vo.PageInfo;
 
 public class BoardDao {
 
 	public int selectListCount(SqlSession sqlSession) {
-		sqlSession.selectOne("boardMapper.selectListCount");
-		
-		return 0;
+		return sqlSession.selectOne("boardMapper.selectListCount");
 		
 	}
 
@@ -36,4 +36,37 @@ public class BoardDao {
 		return (ArrayList)sqlSession.selectList("boardMapper.selectList", null, rowBounds);
 		
 	}
+	
+	public int selectSearchCount(SqlSession sqlSession, HashMap<String, String> map) { //동적sql
+		// condition 값에 따라 sql문이 달라져야함 
+		// if condition == writer -> sql문 where절 WHERE WRITER = XXX
+		// if condition == title -> sql문 where절 WHERE TITLE = XXX
+		// if condition == content -> sql문 where절 WHERE CONTENT = XXX
+		
+		
+		return sqlSession.selectOne("boardMapper.selectSearchCount", map); 
+	}
+	
+	public ArrayList<Board> selectSearchList(SqlSession sqlSession, HashMap<String,String> map, PageInfo pi){
+		int offset = (pi.getCurrentPage()-1) * pi.getBoardLimit();
+		int limit = pi.getBoardLimit();
+		
+		RowBounds rowBounds = new RowBounds(offset, limit);
+		return (ArrayList)sqlSession.selectList("boardMapper.selectSearchList", map, rowBounds);
+		
+	}
+	
+	public int increaseCount(SqlSession sqlSession, int boardNo) {
+		return sqlSession.update("boardMapper.increaseCount", boardNo);
+		//dml 처리된 행수 리턴
+	}
+	
+	public Board selectBoard(SqlSession sqlSession, int boardNo) {
+		return (Board)sqlSession.selectOne("boardMapper.selectBoard", boardNo);
+	}
+	
+	public ArrayList<Reply> selectReplyList(SqlSession sqlSession, int boardNo){
+		return (ArrayList)sqlSession.selectList("boardMapper.selectReplyList", boardNo);
+	}
+	
 }

@@ -19,28 +19,28 @@
         <table align="center" border="1">
             <tr>
                 <td width="100">글번호</td>
-                <td width="500">1</td>
+                <td width="500">${b.boardNo }</td>
             </tr>
             <tr>
                 <td>제목</td>
-                <td>글입니다</td>
+                <td>${b.boardTitle }</td>
             </tr>
             <tr>
                 <td>작성자</td>
-                <td>admin</td>
+                <td>${b.boardWriter }</td>
             </tr>
             <tr>
                 <td>조회수</td>
-                <td>10</td>
+                <td>${b.count }</td>
             </tr>
             <tr>
                 <td>작성일</td>
-                <td>24/04/09</td>
+                <td>${b.createDate }</td>
             </tr>
             <tr>
                 <td>내용</td>
                 <td height="100">
-                    이글은 무엇인가요?
+                    ${b.boardContent}
                 </td>
             </tr>
         </table>
@@ -54,13 +54,15 @@
                 <th><button>등록</button></th>
             </tr>
             <tr>
-                <td colspan="3"><b>댓글(1)</b></td> <!-- fn:length(list) -->
+                <td colspan="3"><b>댓글(${list.size() })</b></td> <!-- fn:length(list) -->
             </tr>
+            <c:forEach var="r" items="${list}">
 	            <tr>
-	                <th>user03</th>
-	                <th>오우 멋지네요</th>
-	                <th>24/04/10</th>
+	                <th>${r.replyWriter}</th>
+	                <th>${r.replyContent }</th>
+	                <th>${r.createDate }</th>
 	            </tr>
+            </c:forEach>
         </table>
     </div>
 </body>
